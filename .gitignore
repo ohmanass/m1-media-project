@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+env/
+*.log
+
+# Django
+*.mo
+*.pyc
+/static/
+media/
+
+# VSCode
+.vscode/
+
+# We hide our keys
+.env
