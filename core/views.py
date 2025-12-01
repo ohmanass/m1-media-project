@@ -4,13 +4,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 import django
-
-###def index(request):
- ###   return HttpResponse("Hello, world. You're at the polls index.")
+from core import API_VERSION  
 
 def health_check(request):
     data = {'message': 'pong'}
     return JsonResponse(data)
 
 def version(request):
-    return JsonResponse({"Django version :": django.get_version()})
+    return JsonResponse({
+        "api_version": API_VERSION,
+        "django_version": django.get_version(),
+    })
