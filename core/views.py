@@ -6,6 +6,7 @@ from django.http import JsonResponse
 import django
 from core import API_VERSION  
 
+# health_check & version routes
 def health_check(request):
     data = {'message': 'pong'}
     return JsonResponse(data)
