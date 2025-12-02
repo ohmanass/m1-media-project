@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from pathlib import Path
-import os
+import os # <- to use imagekit.io
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     # App to use Swagger
     "rest_framework",
     "drf_spectacular",
+    # Imagekit
+    "imagekit",
 ]
 
 MIDDLEWARE = [
@@ -136,3 +138,8 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "API Documentation",
     "VERSION": "0.0.1~dev",
 }
+
+# IMAGEKIT.IO : KEY & URL declaration
+IMAGEKIT_PUBLIC_KEY = "public_1a1mP2tlfs36qmUt7ieacAUHGhs="
+IMAGEKIT_PRIVATE_KEY = "private_JKwK2ouUqIadvv4uh6aCWu4zjGk="
+IMAGEKIT_URL_ENDPOINT = "https://ik.imagekit.io/6af7xo79n/"
