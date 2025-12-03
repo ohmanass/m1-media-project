@@ -1,103 +1,72 @@
-from django.shortcuts import render
-# Create your views here.
-from django.http import HttpResponse
-from django.http import JsonResponse
+import logging
 import django
-from core import API_VERSION  
-# Swagger import
-from .serializers import *
-from rest_framework.response import Response
+
+from django.http import JsonResponse
+from django.conf import settings
+
 from rest_framework.views import APIView
+from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 
-from .imagekit_manager import imagekit # <- imagekit.io import
+from .serializers import PingSerializer
 
+from media.services import upload_file
 
-# health_check & version routes
+logger = logging.getLogger(__name__)
+
+# ============================================ BASIC ROUTES ============================================
+
 def health_check(request):
-    data = {'message': 'pong'}
-    return JsonResponse(data)
+    return JsonResponse({"message": "pong"})
+
 
 def version(request):
     return JsonResponse({
-        "api_version": API_VERSION,
+        "api_version": settings.API_VERSION,
         "django_version": django.get_version(),
     })
 
-########################################## SWAGGER CRUCIAL CLASS ##########################################
+# ====================================== HEALTH CHECK VIEW (Swagger) ======================================
 """
-Class HealthCheckView
- Settings : 
-    - APIView ( introduce by rest_frameworks.views )
-""" 
+class HealthCheckView
+    - Settings : APIView ( imported w//rest_framework.views)
+    - Goal : View the HelathCheckView w//swagger
+"""
 class HealthCheckView(APIView):
     @extend_schema(
-        summary="health check",
-        description="Check if the API is alive or not",
+        summary="Health Check",
+        description="Returns pong if API is alive",
         responses={200: PingSerializer},
-        tags=["core"],
+        tags=["core"]
     )
     def get(self, request):
         return Response({"message": "pong"})
-    
-######################################### IMAGEKIT.IO CRUCIAL CLASS #########################################
+
+# ============================== UPLOAD FILE VIEW to ImageKit.io with REST API ==============================
 """
-Class UploadImageView
- Settings :
-    - APIView ( introduce by rest_frameworks.views )
+class UploadFileView
+    - Settings : APIView ( imported w//rest_framework.views)
+    - Goal : Upload files on IMAGEKIT.IO thanks to API 
 """
-class UploadImageView(APIView):
-    # Post method to upload on imagekit.io
+class UploadFileView(APIView):
+    @extend_schema(
+        summary="Upload a file to ImageKit.io",
+        tags=["core"],
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "file": {"type": "string", "format": "binary"},
+                },
+                "required": ["file"]
+            }
+        },
+        responses={200: dict},
+    )
     def post(self, request):
-        file = request.FILES.get('image')
+        file = request.FILES.get("file")
         if not file:
             return Response({"error": "No file provided"}, status=400)
-        # Upload the file using ImageKit
-        res = imagekit.upload_file(
-            file=file,
-            file_name=file.name,
-            options=None
-        )
-        # Returning PUBLIC URL & file ID
-        return Response({
-            "url": res.url,
-            "file_id": res.file_id,
-        })
-    
-    # Get method to avoid the warnings about get not found
-    def get(self, request):
-        return Response({"message": "Send a POST request with an image to upload"})
-    
-"""
-Class UploadVideoView
- Settings :
-    - APIView ( introduce by rest_frameworks.views )
-"""
-class UploadVideoView(APIView):
-    # Post videos
-    def post(self, request):
-        file = request.FILES.get('video')
-        if not file:
-            return Response({"error": "No video file provided"}, status=400)
 
-        # Checking correct transmission
-        print(f"Received video: {file.name}, size: {file.size} bytes")
-
-        # Upload to ImageKit
-        res = imagekit.upload_file(
-            file=file,
-            file_name=file.name,
-            options={
-                "use_unique_file_name": False, 
-            }
-        )
-
-        return Response({
-            "url": res.url,
-            "file_id": res.file_id,
-            "original_name": res.name,
-            "size": res.size
-        })
-
-    def get(self, request):
-        return Response({"message": "Send a POST request with a video file to upload"})
+        result = upload_file(file)
+        return Response(result)
