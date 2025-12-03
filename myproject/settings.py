@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from pathlib import Path
-import os # <- to use imagekit.io
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -139,7 +139,11 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "0.0.1~dev",
 }
 
-# IMAGEKIT.IO : KEY & URL declaration
-IMAGEKIT_PUBLIC_KEY = "public_1a1mP2tlfs36qmUt7ieacAUHGhs="
-IMAGEKIT_PRIVATE_KEY = "private_JKwK2ouUqIadvv4uh6aCWu4zjGk="
-IMAGEKIT_URL_ENDPOINT = "https://ik.imagekit.io/6af7xo79n/"
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+IMAGEKIT_PUBLIC_KEY = os.getenv("IMAGEKIT_PUBLIC_KEY")
+IMAGEKIT_PRIVATE_KEY = os.getenv("IMAGEKIT_PRIVATE_KEY")
+IMAGEKIT_URL_ENDPOINT = os.getenv("IMAGEKIT_URL_ENDPOINT")
