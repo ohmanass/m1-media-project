@@ -2,7 +2,7 @@
 from imagekitio import ImageKit
 from django.conf import settings
 
-# Crée le client ImageKit
+# Create an ImageKit client instance for uploading videos, url ...
 imagekit = ImageKit(
     public_key=settings.IMAGEKIT_PUBLIC_KEY,
     private_key=settings.IMAGEKIT_PRIVATE_KEY,
