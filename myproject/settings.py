@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from pathlib import Path
 import os
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -42,8 +43,6 @@ INSTALLED_APPS = [
     # App to use Swagger
     "rest_framework",
     "drf_spectacular",
-    # Imagekit
-    "imagekit",
 ]
 
 MIDDLEWARE = [
@@ -101,9 +100,13 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'media',
+        'USER': 'media',
+        'PASSWORD': 'media',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 
@@ -160,7 +163,6 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "0.0.1~dev",
 }
 
-from dotenv import load_dotenv
 
 load_dotenv()
 

@@ -1,3 +1,6 @@
 Django==5.2.8
 drf-spectacular
 djangorestframework
+python-dotenv
+psycopg2-binary
+requests
